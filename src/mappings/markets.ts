@@ -18,9 +18,9 @@ import {
   zeroBD,
 } from './helpers'
 
-let cUSDCAddress = '0x39aa39c021dfbae8fac545936693ac917d5e7563'
-let cETHAddress = '0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5'
-let daiAddress = '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359'
+let zUSDCAddress = '0x0968c90198f08b67365840fa37631b29fe2aa9fc'
+let zETHAddress = '0x4f905f75f5576228ed2d0ea508fb0c32a0696090'
+let daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
 
 // Used for all cERC20 contracts
 function getTokenPrice(
@@ -80,26 +80,20 @@ function getTokenPrice(
 function getUSDCpriceETH(blockNumber: i32): BigDecimal {
   let comptroller = Comptroller.load('1')
   let oracleAddress = comptroller.priceOracle as Address
-  let priceOracle1Address = Address.fromString('02557a5e05defeffd4cae6d83ea3d173b272c904')
-  let USDCAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 '
+  let priceOracle1Address = Address.fromString(
+    '0x47d748c9babd5cca642f9f98e07442c0b5b04d2f',
+  )
+  let USDCAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
   let usdPrice: BigDecimal
 
-  // See notes on block number if statement in getTokenPrices()
-  if (blockNumber > 7715908) {
-    let oracle2 = PriceOracle2.bind(oracleAddress)
-    let mantissaDecimalFactorUSDC = 18 - 6 + 18
-    let bdFactorUSDC = exponentToBigDecimal(mantissaDecimalFactorUSDC)
-    usdPrice = oracle2
-      .getUnderlyingPrice(Address.fromString(cUSDCAddress))
-      .toBigDecimal()
-      .div(bdFactorUSDC)
-  } else {
-    let oracle1 = PriceOracle.bind(priceOracle1Address)
-    usdPrice = oracle1
-      .getPrice(Address.fromString(USDCAddress))
-      .toBigDecimal()
-      .div(mantissaFactorBD)
-  }
+  let oracle2 = PriceOracle2.bind(oracleAddress)
+  let mantissaDecimalFactorUSDC = 18 - 6 + 18
+  let bdFactorUSDC = exponentToBigDecimal(mantissaDecimalFactorUSDC)
+  usdPrice = oracle2
+    .getUnderlyingPrice(Address.fromString(zUSDCAddress))
+    .toBigDecimal()
+    .div(bdFactorUSDC)
+
   return usdPrice
 }
 
@@ -108,7 +102,7 @@ export function createMarket(marketAddress: string): Market {
   let contract = CToken.bind(Address.fromString(marketAddress))
 
   // It is CETH, which has a slightly different interface
-  if (marketAddress == cETHAddress) {
+  if (marketAddress == zETHAddress) {
     market = new Market(marketAddress)
     market.underlyingAddress = Address.fromString(
       '0x0000000000000000000000000000000000000000',
@@ -133,7 +127,7 @@ export function createMarket(marketAddress: string): Market {
     }
     market.underlyingPriceUSD = zeroBD
     market.underlyingPrice = zeroBD
-    if (marketAddress == cUSDCAddress) {
+    if (marketAddress == zUSDCAddress) {
       market.underlyingPriceUSD = BigDecimal.fromString('1')
     }
   }
@@ -169,7 +163,7 @@ function getETHinUSD(blockNumber: i32): BigDecimal {
   let oracleAddress = comptroller.priceOracle as Address
   let oracle = PriceOracle2.bind(oracleAddress)
   let ethPriceInUSD = oracle
-    .getUnderlyingPrice(Address.fromString(cETHAddress))
+    .getUnderlyingPrice(Address.fromString(zETHAddress))
     .toBigDecimal()
     .div(mantissaFactorBD)
   return ethPriceInUSD
@@ -196,7 +190,7 @@ export function updateMarket(
       let ethPriceInUSD = getETHinUSD(blockNumber)
 
       // if cETH, we only update USD price
-      if (market.id == cETHAddress) {
+      if (market.id == zETHAddress) {
         market.underlyingPriceUSD = ethPriceInUSD.truncate(market.underlyingDecimals)
       } else {
         let tokenPriceUSD = getTokenPrice(
@@ -209,7 +203,7 @@ export function updateMarket(
           .div(ethPriceInUSD)
           .truncate(market.underlyingDecimals)
         // if USDC, we only update ETH price
-        if (market.id != cUSDCAddress) {
+        if (market.id != zUSDCAddress) {
           market.underlyingPriceUSD = tokenPriceUSD.truncate(market.underlyingDecimals)
         }
       }
@@ -217,7 +211,7 @@ export function updateMarket(
       let usdPriceInEth = getUSDCpriceETH(blockNumber)
 
       // if cETH, we only update USD price
-      if (market.id == cETHAddress) {
+      if (market.id == zETHAddress) {
         market.underlyingPriceUSD = market.underlyingPrice
           .div(usdPriceInEth)
           .truncate(market.underlyingDecimals)
@@ -230,7 +224,7 @@ export function updateMarket(
         )
         market.underlyingPrice = tokenPriceEth.truncate(market.underlyingDecimals)
         // if USDC, we only update ETH price
-        if (market.id != cUSDCAddress) {
+        if (market.id != zUSDCAddress) {
           market.underlyingPriceUSD = market.underlyingPrice
             .div(usdPriceInEth)
             .truncate(market.underlyingDecimals)
