@@ -1,12 +1,14 @@
-# Compound-V2-subgraph
+# ZENTREST-subgraph
 
-[Compound](https://compound.finance/) is an open-source protocol for algorithmic, efficient Money Markets on the Ethereum blockchain. This Subgraph ingests the V2 contracts of the protocol.
+Deployed to https://thegraph.com/explorer/subgraph/spaceforce-dev/zen-prelim-v001
 
-## Networks and Performance
+Subgraph endpoints:
+Queries (HTTP): https://api.thegraph.com/subgraphs/name/spaceforce-dev/zen-prelim-v001
+Subscriptions (WS): wss://api.thegraph.com/subgraphs/name/spaceforce-dev/zen-prelim-v001
 
-This subgraph can be found on The Graph Hosted Service at https://thegraph.com/explorer/subgraph/graphprotocol/compound-v2.
+[Zentrest](https://app.mantradao.com/) is an open-source protocol for algorithmic, efficient Money Markets on the Ethereum blockchain. This Subgraph ingests the V2 contracts of the protocol.
 
-You can also run this subgraph locally, if you wish. Instructions for that can be found in [The Graph Documentation](https://thegraph.com/docs/quick-start).
+this Subgraph is forked from Compounds subgraph implementation
 
 ### ABI
 
