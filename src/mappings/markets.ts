@@ -20,7 +20,7 @@ import {
 
 let zUSDCAddress = '0x0968c90198f08b67365840fa37631b29fe2aa9fc'
 let zETHAddress = '0x4f905f75f5576228ed2d0ea508fb0c32a0696090'
-let daiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+let mkrAddress = Address.fromString('0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2')
 
 // Used for all cERC20 contracts
 function getTokenPrice(
@@ -101,7 +101,7 @@ export function createMarket(marketAddress: string): Market {
   let market: Market
   let contract = CToken.bind(Address.fromString(marketAddress))
 
-  // It is CETH, which has a slightly different interface
+  // It is ZETH, which has a slightly different interface
   if (marketAddress == zETHAddress) {
     market = new Market(marketAddress)
     market.underlyingAddress = Address.fromString(
@@ -112,18 +112,18 @@ export function createMarket(marketAddress: string): Market {
     market.underlyingName = 'Ether'
     market.underlyingSymbol = 'ETH'
     market.underlyingPriceUSD = zeroBD
-    // It is all other CERC20 contracts
+    // It is all other ZERC20 contracts
   } else {
     market = new Market(marketAddress)
     market.underlyingAddress = contract.underlying()
     let underlyingContract = ERC20.bind(market.underlyingAddress as Address)
     market.underlyingDecimals = underlyingContract.decimals()
-    if (market.underlyingAddress.toHexString() != daiAddress) {
+    if (market.underlyingAddress != mkrAddress) {
       market.underlyingName = underlyingContract.name()
       market.underlyingSymbol = underlyingContract.symbol()
     } else {
-      market.underlyingName = 'Dai Stablecoin v1.0 (DAI)'
-      market.underlyingSymbol = 'DAI'
+      market.underlyingName = 'MakerDao'
+      market.underlyingSymbol = 'MKR'
     }
     market.underlyingPriceUSD = zeroBD
     market.underlyingPrice = zeroBD
