@@ -2,13 +2,13 @@
 
 // For each division by 10, add one to exponent to truncate one significant figure
 import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
-import { Market, Comptroller } from '../types/schema'
+import { Market, Comptroller } from '../../generated/schema'
 // PriceOracle is valid from Comptroller deployment until block 8498421
-import { PriceOracle } from '../types/templates/CToken/PriceOracle'
+import { PriceOracle } from '../../generated/templates/CToken/PriceOracle'
 // PriceOracle2 is valid from 8498422 until present block (until another proxy upgrade)
-import { PriceOracle2 } from '../types/templates/CToken/PriceOracle2'
-import { ERC20 } from '../types/templates/CToken/ERC20'
-import { CToken } from '../types/templates/CToken/CToken'
+import { PriceOracle2 } from '../../generated/templates/CToken/PriceOracle2'
+import { ERC20 } from '../../generated/templates/CToken/ERC20'
+import { CToken } from '../../generated/templates/CToken/CToken'
 
 import {
   exponentToBigDecimal,
